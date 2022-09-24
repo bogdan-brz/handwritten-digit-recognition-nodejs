@@ -34,17 +34,15 @@ const erase = () => {
 };
 
 const save = async () => {
-    const imgData = ctx.getImageData(0, 0, 280, 280);
     const raw = tf.browser.fromPixels(rawImage, 1); // gets pixels from image opy of canvas
     const resized = tf.image.resizeBilinear(raw, [28, 28]); // cuts down on pixels 10 fold (280 x 280 x 1 to 28 x 28 x 1)
-    const tensor = resized.expandDims(0); // adds a dimension at the front to indicate the tensor only has one datapoint to predict (1 x 28 x 28 x 1)
+    const imgData = resized.arraySync(); // convert the tensor into an array becuase the tensor datatype is lost over http request
     const response = await axios({
         method: "POST",
         url: "/predict",
-        data: { tensor },
+        data: { imgData },
     });
-    console.log(response.data);
-    alert(response.data);
+    alert(`prediction: ${response.data}`);
 };
 
 canvas.addEventListener("mousemove", draw);

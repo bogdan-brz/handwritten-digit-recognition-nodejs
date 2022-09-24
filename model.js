@@ -31,10 +31,11 @@ const initModel = async (_xTrain, _yTrain, _xTest, _yTest) => {
     let yTrain = tf.tensor(_yTrain);
     let xTest = tf.tensor(_xTest);
     let yTest = tf.tensor(_yTest);
+    console.log(typeof xTrain);
     xTrain = xTrain.reshape([5500, 28, 28, 1]);
     xTest = xTest.reshape([1000, 28, 28, 1]);
 
-    const onBatchEnd = (batch, logs) => {
+    const onEpochEnd = (batch, logs) => {
         console.log(batch);
         console.log(logs);
     };
@@ -46,7 +47,7 @@ const initModel = async (_xTrain, _yTrain, _xTest, _yTest) => {
             validationData: [xTest, yTest],
             epochs: 20,
             shuffle: true,
-            callbacks: { onBatchEnd: onBatchEnd },
+            callbacks: { onEpochEnd },
         })
         .then(() => {
             isTrained = true;
@@ -54,9 +55,11 @@ const initModel = async (_xTrain, _yTrain, _xTest, _yTest) => {
         });
 };
 
-const predict = (tensor) => {
+const predict = (imgData) => {
+    const tensor = tf.tensor([imgData], [1, 28, 28, 1]); // convert the image data received in form of array into a tensor of the right shape the imgData is in [],
+    // becuase sent over http an arry of length 1 becomes just the sole element of itself
     const prediction = model.predict(tensor);
-    const pIndex = tf.argMax(prediction, 1).dataSync(); // converts the one-hot encoded label into a number (the dataSync thing just converts the tensor into regular data)
+    const pIndex = tf.argMax(prediction, 1).arraySync()[0]; // converts the one-hot encoded label into an array (.data() => object; .array => array; sync => synchronously)
     return pIndex;
 };
 
