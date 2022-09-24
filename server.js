@@ -1,31 +1,32 @@
 const express = require("express");
-const { getData } = require("./data");
+const path = require("path");
 const app = express();
 const port = 3000;
-const { model, initModel } = require("./model");
-
-let xTrain = [];
-let yTrain = [];
-let xTest = [];
-let yTest = [];
+const { getData } = require("./data");
+const { initModel, predict, getIsTrained } = require("./model");
 
 getData((_xTrain, _yTrain, _xTest, _yTest) => {
-    xTrain = _xTrain;
-    yTrain = _yTrain;
-    xTest = _xTest;
-    yTest = _yTest;
     initModel(_xTrain, _yTrain, _xTest, _yTest);
 });
 
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "./"));
+
+app.use(express.static("./"));
+
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/home.html");
+    res.render(__dirname + "/home.ejs");
 });
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
 
-app.get("/predict", (req, res) => {
-    const prediction = model.predict(xTest[0]);
+app.post("/predict", (req, res) => {
+    console.log("in predict");
+    if (!getIsTrained())
+        return res.send("wait, the model hasn't finished training");
+    console.log(req.body);
+    const prediction = predict(req.body);
     res.send(prediction);
 });

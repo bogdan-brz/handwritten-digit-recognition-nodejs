@@ -1,0 +1,29 @@
+body {
+    width: 100%;
+}
+
+#canvas {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    border: 8px solid;
+}
+
+#canvasimg {
+    position: absolute;
+    top: 500px;
+    left: 100px;
+    display: none;
+}
+
+#sb {
+    position: absolute;
+    top: 400px;
+    left: 100px;
+}
+
+#cb {
+    position: absolute;
+    top: 400px;
+    left: 180px;
+}

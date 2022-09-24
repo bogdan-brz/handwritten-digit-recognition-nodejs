@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="/home.css" rel="stylesheet" />
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Digit Recognition</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <h1>Handwritten digit recognition</h1>
+        <canvas id="canvas" width="280" height="280"></canvas>
+        <img id="canvasimg" width="280" height="280" />
+        <input type="button" value="classify" id="sb" size="48" />
+        <input type="button" value="clear" id="cb" size="23" />
+        <script src="/script.js" type="module"></script>
+    </body>
+</html>

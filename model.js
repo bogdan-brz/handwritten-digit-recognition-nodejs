@@ -1,4 +1,5 @@
-const tf = require("@tensorflow/tfjs");
+const tf = require("@tensorflow/tfjs-node");
+let isTrained = false;
 
 const model = tf.sequential();
 
@@ -34,20 +35,33 @@ const initModel = async (_xTrain, _yTrain, _xTest, _yTest) => {
     xTest = xTest.reshape([1000, 28, 28, 1]);
 
     const onBatchEnd = (batch, logs) => {
-        console.log("==========================");
         console.log(batch);
-        console.log(logs.accuracy);
+        console.log(logs);
     };
 
     console.log("training model");
-    model.fit(xTrain, yTrain, {
-        batchSize: BATCH_SIZE,
-        validationData: [xTest, yTest],
-        epochs: 20,
-        shuffle: true,
-        callbacks: { onBatchEnd: onBatchEnd },
-    });
-    console.log("model trained");
+    model
+        .fit(xTrain, yTrain, {
+            batchSize: BATCH_SIZE,
+            validationData: [xTest, yTest],
+            epochs: 20,
+            shuffle: true,
+            callbacks: { onBatchEnd: onBatchEnd },
+        })
+        .then(() => {
+            isTrained = true;
+            console.log("model trained");
+        });
 };
 
-module.exports = { model, initModel };
+const predict = (tensor) => {
+    const prediction = model.predict(tensor);
+    const pIndex = tf.argMax(prediction, 1).dataSync(); // converts the one-hot encoded label into a number (the dataSync thing just converts the tensor into regular data)
+    return pIndex;
+};
+
+const getIsTrained = () => {
+    return isTrained;
+};
+
+module.exports = { initModel, predict, getIsTrained };
