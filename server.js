@@ -9,14 +9,14 @@ getData((_xTrain, _yTrain, _xTest, _yTest) => {
     initModel(_xTrain, _yTrain, _xTest, _yTest);
 });
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "./"));
+app.set("view engine", "ejs"); // allows for res.render
+app.set("views", path.join(__dirname, "./")); // tells the view engine where the files to render are
 
-app.use(express.json());
-app.use(express.static("./"));
+app.use(express.json()); // body parser; IMPORTANT!
+app.use(express.static("./")); // tells express to serve static files from root directory
 
 app.get("/", (req, res) => {
-    res.render(__dirname + "/home.ejs");
+    res.render("home.ejs");
 });
 
 app.listen(port, () => {
